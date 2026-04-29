@@ -1,26 +1,22 @@
 from enum import Enum
-import re
 
 class TextType(Enum):
-    PLAIN_TEXT = "text (plain)"
-    BOLD_TEXT = "**bold text**"
-    ITALIC_TEXT = "_italic text_"
-    CODE_TEXT = "`code text`"
-    LINK_TEXT = "[anchor text](url)"
-    IMAGE_TEXT = "![alt text](url)"
+    PLAIN = "text"
+    BOLD = "bold"
+    ITALIC = "italic"
+    CODE = "code"
+    LINK = "link"
+    IMAGE = "image"
 
 class TextNode():
-    def __init__(self, text, url):
+    def __init__(self, text, text_type, url=None):
         self.text = text
-        self.text_type = TextType(text)
-        if self.text_type is LINK_TEXT or self.text_type is IMAGE_TEXT:
-            self.url = re.search(r"\[([A-Za-z0-9_]+)\]", self.text)
-        else:
-            self.url = None
+        self.text_type = text_type
+        self.url = url
 
-    def __eg__(self, other):
+    def __eq__(self, other):
         if self.text == other.text \
-        and self.text_type == other.text__type \
+        and self.text_type == other.text_type \
         and self.url == other.url:
             return True
         else:
