@@ -26,3 +26,23 @@ class TestNodeProcessing(unittest.TestCase):
                 "*",
                 TextType.BOLD
             )
+    
+    def test_bold_node(self):
+        test_node = TextNode(
+            "finished *bold* word",
+            TextType.TEXT
+        )
+        print(f"Type of node is {type(test_node)}")
+        converted_node = split_nodes_delimiter(
+            [test_node],
+            "*",
+            TextType.BOLD
+        )
+        self.assertEqual(
+            converted_node,
+            [
+                TextNode("finished ", TextType.TEXT),
+                TextNode("bold", TextType.BOLD),
+                TextNode(" word", TextType.TEXT)
+            ]
+        )
