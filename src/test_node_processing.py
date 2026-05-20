@@ -7,7 +7,7 @@ class TestNodeProcessing(unittest.TestCase):
         with self.assertRaises(ValueError):
             split_nodes_delimiter(None, None, None)
     
-    def test_node_not_text_node(self):
+    def test_node_not_text_type(self):
         test_node = [TextNode("`code node`", TextType.CODE)]
         self.assertEqual(
             split_nodes_delimiter(test_node, "`", TextType.CODE),
@@ -68,5 +68,79 @@ class TestNodeProcessing(unittest.TestCase):
                 TextNode("this is ", TextType.TEXT),
                 TextNode("not an italic", TextType.BOLD),
                 TextNode(" word", TextType.TEXT)
+            ]
+        )
+    
+    def test_multiple_texttype(self):
+        node = TextNode(
+            "this *is bold* and this *is bold too* okay",
+            TextType.TEXT
+        )
+        self.assertEqual(
+            split_nodes_delimiter(
+                [node],
+                "*",
+                TextType.BOLD
+            ),
+            [
+                TextNode("this ", TextType.TEXT),
+                TextNode("is bold", TextType.BOLD),
+                TextNode(" and this ", TextType.TEXT),
+                TextNode("is bold too", TextType.BOLD),
+                TextNode(" okay", TextType.TEXT),
+            ]
+        )
+
+    def test_no_delimeters(self):
+        node = TextNode(
+            "This is not the delimeter you are looking for",
+            TextType.TEXT
+        )
+        self.assertEqual(
+            split_nodes_delimiter(
+                [node],
+                "*",
+                TextType.BOLD
+            ),
+            [
+                TextNode("This is not the delimeter you are looking for", TextType.TEXT)
+            ]
+        )
+
+    def test_delimiter_at_boundary(self):
+        node = TextNode(
+            "*bold* at the start, chill at the *end*",
+            TextType.TEXT
+        )
+        self.assertEqual(
+            split_nodes_delimiter(
+                [node],
+                "*",
+                TextType.BOLD
+            ),
+            [
+                TextNode("", TextType.TEXT),
+                TextNode("bold", TextType.BOLD),
+                TextNode(" at the start, chill at the ", TextType.TEXT),
+                TextNode("end", TextType.BOLD),
+                TextNode("", TextType.TEXT),
+            ]
+        )
+
+    def test_mixed_type_input(self):
+        node = TextNode(
+            "*bold* but want `code` instead *yo*",
+            TextType.TEXT
+        )
+        self.assertEqual(
+            split_nodes_delimiter(
+                [node],
+                "`",
+                TextType.CODE
+            ),
+            [
+                TextNode("*bold* but want ", TextType.TEXT),
+                TextNode("code", TextType.CODE),
+                TextNode(" instead *yo*", TextType.TEXT)
             ]
         )
