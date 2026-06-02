@@ -22,15 +22,27 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
                     output_nodes_list.append(TextNode(split_node, text_type=TextType.TEXT))
     return output_nodes_list
 
-def extract_links(markdown_list):
+def extract_markdown_images(markdown_list):
     if markdown_list is None:
         raise ValueError("No markdown text passed")
     links_set_list = []
     for markdown_text in markdown_list:
         if not isinstance(markdown_text, str):
             return ValueError("String not passed")
-        links_set_list.append(
-            re.findall(r"(\[\D+])(\(\D+\))")
+        links_set_list.extend(
+            re.findall(r"!\[(.+)\]\((.+)\)")
+        )
+    return links_set_list
+
+def extract_markdown_links(markdown_list):
+    if markdown_list is None:
+        raise ValueError("No markdown text passed")
+    links_set_list = []
+    for markdown_text in markdown_list:
+        if not isinstance(markdown_text, str):
+            return ValueError("String not passed")
+        links_set_list.extend(
+            re.findall(r"(?<!\!)\[(.+)\]\((.+)\)")
         )
     return links_set_list
         
