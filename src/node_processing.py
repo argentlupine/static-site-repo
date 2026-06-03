@@ -30,7 +30,7 @@ def extract_markdown_images(markdown_list):
         if not isinstance(markdown_text, str):
             return ValueError("String not passed")
         links_set_list.extend(
-            re.findall(r"!\[(.+)\]\((.+)\)")
+            re.findall(r"!\[(.+)\]\((.+)\)", markdown_text)
         )
     return links_set_list
 
@@ -42,7 +42,7 @@ def extract_markdown_links(markdown_list):
         if not isinstance(markdown_text, str):
             return ValueError("String not passed")
         links_set_list.extend(
-            re.findall(r"(?<!\!)\[(.+)\]\((.+)\)")
+            re.findall(r"(?<!\!)\[(.+)\]\((.+)\)", markdown_text)
         )
     return links_set_list
         
