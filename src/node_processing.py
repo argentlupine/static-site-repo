@@ -38,5 +38,6 @@ def extract_markdown_links(markdown_text):
     if not isinstance(markdown_text, str):
         raise ValueError("String not passed")
     return re.findall(
-        r'(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)'
+        r'(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)',
+        markdown_text
     )

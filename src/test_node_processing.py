@@ -1,6 +1,6 @@
 import unittest
 from textnode import TextNode, TextType
-from node_processing import split_nodes_delimiter
+from node_processing import split_nodes_delimiter, extract_markdown_images, extract_markdown_links
 
 class TestNodeProcessing(unittest.TestCase):
     def test_no_nodes_in_list(self):
@@ -145,3 +145,38 @@ class TestNodeProcessing(unittest.TestCase):
             ]
         )
         
+    def test_extract_markdown_images_1(self):
+        matches = extract_markdown_images(
+            "This is text and an ![image](fake_link_goes_here)"
+        )
+        self.assertEqual(
+            [("image", "fake_link_goes_here")],
+            matches
+        )
+
+    def test_extract_markdown_images_2(self):
+        matches = extract_markdown_images(
+            "Text here and a [bad](output)"
+        )
+        self.assertEqual(
+            [],
+            matches
+        )
+
+    def test_extract_markdown_links_1(self):
+        matches = extract_markdown_links(
+            "Text, followed by a [link](goes here!!)"
+        )
+        self.assertEqual(
+            [("link", "goes here!!")],
+            matches
+        )
+    
+    def test_extract_markdown_links_2(self):
+        matches = extract_markdown_links(
+            "Text, followed by an ![image](is linked here)"
+        )
+        self.assertEqual(
+            [],
+            matches
+        )
