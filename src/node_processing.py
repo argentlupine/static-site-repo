@@ -41,3 +41,24 @@ def extract_markdown_links(markdown_text):
         r'(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)',
         markdown_text
     )
+
+def split_nodes_image(node_list):
+    if node_list is None:
+        return ValueError("Nothing passed to function")
+    if not isinstance(node_list, list):
+        return ValueError("Function requires a list to be passed to it")
+    output_list = []
+    for node in node_list:
+        if not isinstance(node, TextNode):
+            return ValueError(f"{node} is not a TextNode")
+        images = extract_markdown_images(node)
+        if images == []:
+            output_list.append(node)
+            continue
+        split_node = node.copy()
+        for image in images:
+            split_node = str.split(f'![{image[0]}({image[1]})]')
+            output_list.append(TextNode(split_node[0], TextType.TEXT))
+            output_list.append(TextNode(node[0], TextType.IMAGE, node[1]))
+            split_node.pop()
+            
