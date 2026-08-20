@@ -57,8 +57,23 @@ def split_nodes_image(node_list):
             continue
         split_node = node.copy()
         for image in images:
-            split_node = str.split(f'![{image[0]}({image[1]})]')
-            output_list.append(TextNode(split_node[0], TextType.TEXT))
-            output_list.append(TextNode(node[0], TextType.IMAGE, node[1]))
+            #  First split the text
+            split_node = spit_node.split(f'![{image[0]}({image[1]})]')
+            # Next check whether the first split is empty
+            if split_node[0] == '':
+                continue
+            else:
+                output_list.append(TextNode(split_node[0], TextType.TEXT))
+            # Then append the image node
+            output_list.append(TextNode(image[0], TextType.IMAGE, image[1]))
+            # Lastly pop the top of the list
             split_node.pop()
+            # Loop cycles around again on the remainder of the list
+            # What happens when reaching the end of the list? append after the loop!
+        if split_node[0] == '':
+            continue
+        else:
+            output_list.append(TextNode(split_node[0], TextType.TEXT))
+        # Then cycle into the next node?
+        # Yes! Output list will not be reset
             
