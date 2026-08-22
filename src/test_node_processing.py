@@ -119,11 +119,9 @@ class TestNodeProcessing(unittest.TestCase):
                 TextType.BOLD
             ),
             [
-                TextNode("", TextType.TEXT),
                 TextNode("bold", TextType.BOLD),
                 TextNode(" at the start, chill at the ", TextType.TEXT),
-                TextNode("end", TextType.BOLD),
-                TextNode("", TextType.TEXT),
+                TextNode("end", TextType.BOLD)
             ]
         )
 
@@ -144,7 +142,9 @@ class TestNodeProcessing(unittest.TestCase):
                 TextNode(" instead *yo*", TextType.TEXT)
             ]
         )
-        
+    
+    # Now testing extract markdown images
+
     def test_extract_markdown_images_1(self):
         matches = extract_markdown_images(
             "This is text and an ![image](fake_link_goes_here)"
@@ -162,6 +162,8 @@ class TestNodeProcessing(unittest.TestCase):
             [],
             matches
         )
+
+    # Now testing extract markdown links
 
     def test_extract_markdown_links_1(self):
         matches = extract_markdown_links(
