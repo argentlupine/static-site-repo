@@ -116,7 +116,7 @@ def text_to_textnodes(text):
     if text is None:
         raise ValueError("Nothing passed to function")
     starter_text_node = TextNode(text, TextType.TEXT)
-    bold_list = split_nodes_delimiter([starter_text_node], "*", TextType.BOLD)
+    bold_list = split_nodes_delimiter([starter_text_node], "**", TextType.BOLD)
     italic_list = split_nodes_delimiter(bold_list, "_", TextType.ITALIC)
     code_list = split_nodes_delimiter(italic_list, "`", TextType.CODE)
     image_list = split_nodes_image(code_list)

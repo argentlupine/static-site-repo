@@ -16,24 +16,24 @@ class TestNodeProcessing(unittest.TestCase):
 
     def test_node_odd_number_delimiters(self):
         test_node = TextNode(
-            "unfinished *bold word",
+            "unfinished **bold word",
             TextType.TEXT
         )
         with self.assertRaises(ValueError):
             split_nodes_delimiter(
                 [test_node],
-                "*",
+                "**",
                 TextType.BOLD
             )
     
     def test_bold_node(self):
         test_node = TextNode(
-            "finished *bold* word",
+            "finished **bold** word",
             TextType.TEXT
         )
         converted_node = split_nodes_delimiter(
             [test_node],
-            "*",
+            "**",
             TextType.BOLD
         )
         self.assertEqual(
@@ -47,16 +47,16 @@ class TestNodeProcessing(unittest.TestCase):
     
     def test_multiple_nodes(self):
         node1 = TextNode(
-            "this is a *bold* word",
+            "this is a **bold** word",
             TextType.TEXT
         )
         node2 = TextNode(
-            "this is *not an italic* word",
+            "this is **not an italic** word",
             TextType.TEXT
         )
         converted_nodes = split_nodes_delimiter(
             [node1, node2],
-            "*",
+            "**",
             TextType.BOLD
         )
         self.assertEqual(
@@ -73,13 +73,13 @@ class TestNodeProcessing(unittest.TestCase):
     
     def test_multiple_texttype(self):
         node = TextNode(
-            "this *is bold* and this *is bold too* okay",
+            "this **is bold** and this **is bold too** okay",
             TextType.TEXT
         )
         self.assertEqual(
             split_nodes_delimiter(
                 [node],
-                "*",
+                "**",
                 TextType.BOLD
             ),
             [
@@ -99,7 +99,7 @@ class TestNodeProcessing(unittest.TestCase):
         self.assertEqual(
             split_nodes_delimiter(
                 [node],
-                "*",
+                "**",
                 TextType.BOLD
             ),
             [
@@ -109,13 +109,13 @@ class TestNodeProcessing(unittest.TestCase):
 
     def test_delimiter_at_boundary(self):
         node = TextNode(
-            "*bold* at the start, chill at the *end*",
+            "**bold** at the start, chill at the **end**",
             TextType.TEXT
         )
         self.assertEqual(
             split_nodes_delimiter(
                 [node],
-                "*",
+                "**",
                 TextType.BOLD
             ),
             [
@@ -127,7 +127,7 @@ class TestNodeProcessing(unittest.TestCase):
 
     def test_mixed_type_input(self):
         node = TextNode(
-            "*bold* but want `code` instead *yo*",
+            "**bold** but want `code` instead **yo**",
             TextType.TEXT
         )
         self.assertEqual(
@@ -137,9 +137,9 @@ class TestNodeProcessing(unittest.TestCase):
                 TextType.CODE
             ),
             [
-                TextNode("*bold* but want ", TextType.TEXT),
+                TextNode("**bold** but want ", TextType.TEXT),
                 TextNode("code", TextType.CODE),
-                TextNode(" instead *yo*", TextType.TEXT)
+                TextNode(" instead **yo**", TextType.TEXT)
             ]
         )
     
@@ -544,7 +544,7 @@ class TestNodeProcessing(unittest.TestCase):
     # Lastly testing the text_to_text_node function
     def test_text_to_text_nodes_bold(self):
         nodes_created = text_to_textnodes(
-            'This is *bold* text yo'
+            'This is **bold** text yo'
         )
         self.assertEqual(
             [
@@ -609,7 +609,7 @@ class TestNodeProcessing(unittest.TestCase):
 
     def test_text_to_text_nodes_all_types(self):
         nodes_created = text_to_textnodes(
-            'This is *text* with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)'
+            'This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)'
         )
         self.assertEqual(
             [
@@ -629,7 +629,7 @@ class TestNodeProcessing(unittest.TestCase):
     
     def test_text_to_text_nodes_all_types_except_text(self):
         nodes_created = text_to_textnodes(
-            '*text*_italic_`code block`![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg)[link](https://boot.dev)'
+            '**text**_italic_`code block`![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg)[link](https://boot.dev)'
         )
         self.assertEqual(
             [
