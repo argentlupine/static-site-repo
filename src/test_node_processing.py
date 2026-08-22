@@ -1,6 +1,6 @@
 import unittest
 from textnode import TextNode, TextType
-from node_processing import split_nodes_delimiter, extract_markdown_images, extract_markdown_links
+from node_processing import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image
 
 class TestNodeProcessing(unittest.TestCase):
     def test_no_nodes_in_list(self):
@@ -179,4 +179,104 @@ class TestNodeProcessing(unittest.TestCase):
         self.assertEqual(
             [],
             matches
+        )
+    
+    # Hard tests: split nodes to extract images!!!
+    # 1. Check it works with one image
+    def test_split_nodes_image_01(self):
+        split_image = split_nodes_image(
+            [
+                TextNode('This is text and an ![image](fake_link_goes_here)', TextType.TEXT)
+            ]
+        )
+        self.assertEqual(
+            [
+                TextNode('This is text and an ', TextType.TEXT),
+                TextNode('image', TextType.IMAGE, 'fake_link_goes_here')
+            ],
+            split_image
+        )
+    
+    # 2. Check it works with two images
+    def test_split_nodes_image_02(self):
+        split_image = split_nodes_image(
+            [
+                TextNode('This is text and an ![image](fake_link_goes_here)', TextType.TEXT),
+                TextNode('This is text2 and an ![image2](fake2_link2_goes2_here)', TextType.TEXT)
+            ]
+        )
+        self.assertEqual(
+            [
+                TextNode('This is text and an ', TextType.TEXT),
+                TextNode('image', TextType.IMAGE, 'fake_link_goes_here'),
+                TextNode('This is text2 and an ', TextType.TEXT),
+                TextNode('image2', TextType.IMAGE, 'fake2_link2_goes2_here')
+            ],
+            split_image
+        )
+    
+    # 3. Check it works with an image and trailing text
+    def test_split_nodes_image_03(self):
+        split_image = split_nodes_image(
+            [
+                TextNode('This is text and an ![image](fake_link_goes_here) followed by some additional text', TextType.TEXT)
+            ]
+        )
+        self.assertEqual(
+            [
+                TextNode('This is text and an ', TextType.TEXT),
+                TextNode('image', TextType.IMAGE, 'fake_link_goes_here'),
+                TextNode(' followed by some additional text', TextType.TEXT)
+            ],
+            split_image
+        )
+    
+    # 4. Check it works with two images
+    def test_split_nodes_image_04(self):
+        split_image = split_nodes_image(
+            [
+                TextNode("This is text with a link ![to boot dev](https://www.boot.dev) and ![to youtube](https://www.youtube.com/@bootdotdev)", TextType.TEXT)
+            ]
+        )
+        self.assertEqual(
+            [
+                TextNode('This is text with a link ', TextType.TEXT),
+                TextNode('to boot dev', TextType.IMAGE, 'https://www.boot.dev'),
+                TextNode(' and ', TextType.TEXT),
+                TextNode('to youtube', TextType.IMAGE, 'https://www.youtube.com/@bootdotdev')
+            ],
+            split_image
+        )
+    
+    # 5. Check it works with the same image twice
+    def test_split_nodes_image_05(self):
+        split_image = split_nodes_image(
+            [
+                TextNode("This is text with a link ![to boot dev](https://www.boot.dev) and ![to boot dev](https://www.boot.dev)", TextType.TEXT)
+            ]
+        )
+        self.assertEqual(
+            [
+                TextNode('This is text with a link ', TextType.TEXT),
+                TextNode('to boot dev', TextType.IMAGE, 'https://www.boot.dev'),
+                TextNode(' and ', TextType.TEXT),
+                TextNode('to boot dev', TextType.IMAGE, 'https://www.boot.dev')
+            ],
+            split_image
+        )
+    
+    # 6. Check it doesn't pick up a link
+    def test_split_nodes_image_06(self):
+        split_image = split_nodes_image(
+            [
+                TextNode("This is text with a link ![to boot dev](https://www.boot.dev) and [to boot dev](https://www.boot.dev)", TextType.TEXT)
+            ]
+        )
+        self.assertEqual(
+            [
+                TextNode('This is text with a link ', TextType.TEXT),
+                TextNode('to boot dev', TextType.IMAGE, 'https://www.boot.dev'),
+                TextNode(' and [to boot dev](https://www.boot.dev)', TextType.TEXT)
+            ],
+            split_image
         )
