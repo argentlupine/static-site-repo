@@ -13,8 +13,9 @@ def main(image_list):
     return split_nodes_image(image_list)
 
 image_to_test = [
-    TextNode('This is text and an ![image](fake_link_goes_here) followed by some additional text', TextType.TEXT),
-    TextNode("This is text with a link ![to boot dev](https://www.boot.dev) and ![to youtube](https://www.youtube.com/@bootdotdev)", TextType.TEXT)
+    # TextNode('This is text and an ![image](fake_link_goes_here) followed by some additional text', TextType.TEXT),
+    # TextNode("This is text with a link ![to boot dev](https://www.boot.dev) and ![to youtube](https://www.youtube.com/@bootdotdev)", TextType.TEXT),
+    TextNode("This is text with a link ![to boot dev](https://www.boot.dev) and ![to boot dev](https://www.boot.dev)", TextType.TEXT)
 ]
 
 if __name__ == "__main__":

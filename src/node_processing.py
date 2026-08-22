@@ -58,33 +58,37 @@ def split_nodes_image(node_list):
             output_list.append(node)
             print(f'3. No images found proceeding to next node')
             continue
-        node_text = node.text # Removed the copy
-        print(f'4. Extracted node text in {node_text}')
+        node_text_list = []
+        node_text_list.append(node.text)
+        print(f'4. Extracted node text in {node_text_list}')
         for image in images:
             #  First split the text
             print(f'5. Starting to loop through the node text, with images {image}')
-            node_text = node_text.split(f'![{image[0]}]({image[1]})', 1)
+            node_text_list = node_text_list[0].split(f'![{image[0]}]({image[1]})', 1)
             # Next check whether the first split is empty
-            print(f'6. Split the node text, now node_text is: {node_text}')
-            if node_text[0] == '':
+            print(f'6. Split the node text, now node_text_list is: {node_text_list}')
+            if node_text_list[0] == '':
                 continue
             else:
-                output_list.append(TextNode(node_text[0], TextType.TEXT))
+                output_list.append(TextNode(node_text_list[0], TextType.TEXT))
                 print(f'7. Output list appended. Output list status: {output_list}')
             # Then append the image node
             output_list.append(TextNode(image[0], TextType.IMAGE, image[1]))
             print(f'8. Output list appended with image. Output list status: {output_list}')
             # Lastly pop the top of the list
-            node_text = node_text.pop()
-            print(f'9. Popped the node text, now looks like: {node_text}')
+            print(f'8.5. Prior to popping, node_text_list is: {node_text_list}')
+            node_text_list.pop(0)
+            print(f'9. Popped the node text, now looks like: {node_text_list}')
+            print(f'9.5 The type of the popped list is {type(node_text_list)}')
             # Loop cycles around again on the remainder of the list
             # What happens when reaching the end of the list? append after the loop!
-        if not node_text:
+        if not node_text_list:
             continue        
-        if node_text[0] == '':
+        elif node_text_list[0] == '':
             continue
         else:
-            output_list.append(TextNode(node_text[0], TextType.TEXT))
+            print(f'10. Appending remainder of the node: {node_text_list[0]}')
+            output_list.append(TextNode(node_text_list[0], TextType.TEXT))
         # Then cycle into the next node?
         # Yes! Output list will not be reset
     return output_list            
