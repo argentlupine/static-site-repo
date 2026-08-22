@@ -308,6 +308,50 @@ class TestNodeProcessing(unittest.TestCase):
             ],
             split_image
         )
+
+    # 9. Checking it handles a node that isn't text correctly
+    def test_split_nodes_image_09(self):
+        split_image = split_nodes_image(
+            [
+                TextNode('This is text and an ![image](fake_link_goes_here)', TextType.BOLD)
+            ]
+        )
+        self.assertEqual(
+            [
+                TextNode('This is text and an ![image](fake_link_goes_here)', TextType.BOLD)
+            ],
+            split_image
+        )
+    
+    # 10. Just an image, nothing else
+    def test_split_nodes_image_10(self):
+        split_image = split_nodes_image(
+            [
+                TextNode('![image](fake_link_goes_here)', TextType.TEXT)
+            ]
+        )
+        self.assertEqual(
+            [
+                TextNode('image', TextType.IMAGE, 'fake_link_goes_here')
+            ],
+            split_image
+        )
+    
+    # 11. Check two consecutive images
+    def test_split_nodes_image_11(self):
+        split_image = split_nodes_image(
+            [
+                TextNode('![image](fake_link_goes_here)![image2](fake2_link2_goes2_here)', TextType.TEXT)
+            ]
+        )
+        self.assertEqual(
+            [
+                TextNode('image', TextType.IMAGE, 'fake_link_goes_here'),
+                TextNode('image2', TextType.IMAGE, 'fake2_link2_goes2_here')
+            ],
+            split_image
+        )
+
     
     # Now running effectively the same tests for the link!
     # 1. Check it works with one link
@@ -433,6 +477,49 @@ class TestNodeProcessing(unittest.TestCase):
         self.assertEqual(
             [
                 
+            ],
+            split_link
+        )
+
+    # 9. Checking it handles a node that isn't text correctly
+    def test_split_nodes_link_09(self):
+        split_link = split_nodes_link(
+            [
+                TextNode('This is text and an [link](fake_link_goes_here)', TextType.BOLD)
+            ]
+        )
+        self.assertEqual(
+            [
+                TextNode('This is text and an [link](fake_link_goes_here)', TextType.BOLD)
+            ],
+            split_link
+        )
+    
+    # 10. Just a link, nothing else
+    def test_split_nodes_link_10(self):
+        split_link = split_nodes_link(
+            [
+                TextNode('[link](fake_link_goes_here)', TextType.TEXT)
+            ]
+        )
+        self.assertEqual(
+            [
+                TextNode('link', TextType.LINK, 'fake_link_goes_here')
+            ],
+            split_link
+        )
+    
+    # 11. Check two consecutive links
+    def test_split_nodes_link_11(self):
+        split_link = split_nodes_link(
+            [
+                TextNode('[link](fake_link_goes_here)[link2](fake2_link2_goes2_here)', TextType.TEXT)
+            ]
+        )
+        self.assertEqual(
+            [
+                TextNode('link', TextType.LINK, 'fake_link_goes_here'),
+                TextNode('link2', TextType.LINK, 'fake2_link2_goes2_here')
             ],
             split_link
         )
