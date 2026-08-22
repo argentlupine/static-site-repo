@@ -9,8 +9,8 @@ from node_processing import *
 # text_type_test = TextType.LINK
 # text_url_test = "https://www.boot.dev"
 
-def main(link_list):
-    return split_nodes_link(link_list)
+def main(texty):
+    return text_to_textnodes(texty)
 
 link_to_test = [
     # TextNode('This is text and a [link](fake_link_goes_here)', TextType.TEXT)
@@ -19,7 +19,9 @@ link_to_test = [
     # TextNode("This is text with a link [to boot dev](https://www.boot.dev) and [to boot dev](https://www.boot.dev)", TextType.TEXT)
 ]
 
+tester_text = "This is *text* with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+
 if __name__ == "__main__":
     # main(text_test, text_type_test, text_url_test)
-    output = main(link_to_test)
+    output = main(tester_text)
     print(output)

@@ -1,6 +1,6 @@
 import unittest
 from textnode import TextNode, TextType
-from node_processing import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image, split_nodes_link
+from node_processing import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image, split_nodes_link, text_to_textnodes
 
 class TestNodeProcessing(unittest.TestCase):
     def test_no_nodes_in_list(self):
@@ -353,6 +353,21 @@ class TestNodeProcessing(unittest.TestCase):
             ],
             split_image
         )
+    
+    # 12. Check an image then a link consecutively
+    def test_split_nodes_image_12(self):
+        split_image = split_nodes_image(
+            [
+                TextNode('![image](fake_link_goes_here)[image2](fake2_link2_goes2_here)', TextType.TEXT)
+            ]
+        )
+        self.assertEqual(
+            [
+                TextNode('image', TextType.IMAGE, 'fake_link_goes_here'),
+                TextNode('[image2](fake2_link2_goes2_here)', TextType.TEXT)
+            ],
+            split_image
+        )
 
     
     # Now running effectively the same tests for the link!
@@ -524,4 +539,105 @@ class TestNodeProcessing(unittest.TestCase):
                 TextNode('link2', TextType.LINK, 'fake2_link2_goes2_here')
             ],
             split_link
+        )
+    
+    # Lastly testing the text_to_text_node function
+    def test_text_to_text_nodes_bold(self):
+        nodes_created = text_to_textnodes(
+            'This is *bold* text yo'
+        )
+        self.assertEqual(
+            [
+                TextNode('This is ', TextType.TEXT),
+                TextNode('bold', TextType.BOLD),
+                TextNode(' text yo', TextType.TEXT)
+            ],
+            nodes_created
+        )
+
+    def test_text_to_text_nodes_italic(self):
+        nodes_created = text_to_textnodes(
+            'This is _italic_ text yo'
+        )
+        self.assertEqual(
+            [
+                TextNode('This is ', TextType.TEXT),
+                TextNode('italic', TextType.ITALIC),
+                TextNode(' text yo', TextType.TEXT)
+            ],
+            nodes_created
+        )
+
+    def test_text_to_text_nodes_code(self):
+        nodes_created = text_to_textnodes(
+            'This is `code` text yo'
+        )
+        self.assertEqual(
+            [
+                TextNode('This is ', TextType.TEXT),
+                TextNode('code', TextType.CODE),
+                TextNode(' text yo', TextType.TEXT)
+            ],
+            nodes_created
+        )
+
+    def test_text_to_text_nodes_image(self):
+        nodes_created = text_to_textnodes(
+            'This is ![image](crazy link here) text yo'
+        )
+        self.assertEqual(
+            [
+                TextNode('This is ', TextType.TEXT),
+                TextNode('image', TextType.IMAGE, 'crazy link here'),
+                TextNode(' text yo', TextType.TEXT)
+            ],
+            nodes_created
+        )
+
+    def test_text_to_text_nodes_link(self):
+        nodes_created = text_to_textnodes(
+            'This is [link](crazy link here) text yo'
+        )
+        self.assertEqual(
+            [
+                TextNode('This is ', TextType.TEXT),
+                TextNode('link', TextType.LINK, 'crazy link here'),
+                TextNode(' text yo', TextType.TEXT)
+            ],
+            nodes_created
+        )
+
+    def test_text_to_text_nodes_all_types(self):
+        nodes_created = text_to_textnodes(
+            'This is *text* with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)'
+        )
+        self.assertEqual(
+            [
+                TextNode("This is ", TextType.TEXT),
+                TextNode("text", TextType.BOLD),
+                TextNode(" with an ", TextType.TEXT),
+                TextNode("italic", TextType.ITALIC),
+                TextNode(" word and a ", TextType.TEXT),
+                TextNode("code block", TextType.CODE),
+                TextNode(" and an ", TextType.TEXT),
+                TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+                TextNode(" and a ", TextType.TEXT),
+                TextNode("link", TextType.LINK, "https://boot.dev")
+            ],
+            nodes_created
+        )
+    
+    def test_text_to_text_nodes_all_types_except_text(self):
+        nodes_created = text_to_textnodes(
+            '*text*_italic_`code block`![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg)[link](https://boot.dev)'
+        )
+        self.assertEqual(
+            [
+                TextNode("text", TextType.BOLD),
+                TextNode("italic", TextType.ITALIC),
+                TextNode("code block", TextType.CODE),
+                TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+                TextNode("link", TextType.LINK, "https://boot.dev")
+            ],
+            nodes_created
         )
