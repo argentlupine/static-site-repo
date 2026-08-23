@@ -69,37 +69,79 @@ This is _italiced_paragraph
         )
 
     # Now testing the blocktype enum that's been created
-    # def test_block_to_blocktype_heading(self):
-    #     block = '### this is a heading'
-    #     self.assertEqual(
-    #         block_to_block_type(block),
-    #         BlockType.HEADING
-    #     )
+    def test_block_to_blocktype_heading(self):
+        block = '### this is a heading'
+        self.assertEqual(
+            block_to_block_type(block),
+            BlockType.HEADING
+        )
+
+    def test_block_to_blocktype_heading_bad(self):
+        block = '###this is a heading'
+        self.assertEqual(
+            block_to_block_type(block),
+            BlockType.PARAGRAPH
+        )
     
-    # def test_block_to_blocktype_code(self):
-    #     block = '```\nthis is a code block\n```'
-    #     self.assertEqual(
-    #         block_to_block_type(block),
-    #         BlockType.CODE
-    #     )
+    def test_block_to_blocktype_code(self):
+        block = '```\nthis is a code block\n```'
+        self.assertEqual(
+            block_to_block_type(block),
+            BlockType.CODE
+        )
+
+    def test_block_to_blocktype_code_bad(self):
+        block = '``` \nthis is a code block\n```'
+        self.assertEqual(
+            block_to_block_type(block),
+            BlockType.PARAGRAPH
+        )
     
-    # def test_block_to_blocktype_quote(self):
-    #     block = '>quote line one\n> quote line two\n>  quote line three'
-    #     self.assertEqual(
-    #         block_to_block_type(block),
-    #         BlockType.QUOTE
-    #     )
+    def test_block_to_blocktype_quote(self):
+        block = '>quote line one\n> quote line two\n>  quote line three'
+        self.assertEqual(
+            block_to_block_type(block),
+            BlockType.QUOTE
+        )
     
-    # def test_block_to_blocktype_unordered_list(self):
-    #     block = '- list item\n- another list item\n- a final list item'
-    #     self.assertEqual(
-    #         block_to_block_type(block),
-    #         BlockType.UNORDERED_LIST
-    #     )
+    def test_block_to_blocktype_quote_bad(self):
+        block = ' >quote line one\n > quote line two\n >  quote line three'
+        self.assertEqual(
+            block_to_block_type(block),
+            BlockType.PARAGRAPH
+        )
+
+    def test_block_to_blocktype_unordered_list(self):
+        block = '- list item\n- another list item\n- a final list item'
+        self.assertEqual(
+            block_to_block_type(block),
+            BlockType.UNORDERED_LIST
+        )
+
+    def test_block_to_blocktype_unordered_list_bad(self):
+        block = '-list item\n-another list item- a final list item'
+        self.assertEqual(
+            block_to_block_type(block),
+            BlockType.PARAGRAPH
+        )
     
     def test_block_to_blocktype_ordered_list(self):
         block = '1. list item\n2. another list item\n3. a final list item'
         self.assertEqual(
             block_to_block_type(block),
             BlockType.ORDERED_LIST
+        )
+
+    def test_block_to_blocktype_ordered_list_bad(self):
+        block = '1 list item\n2 another list item\n3 a final list item'
+        self.assertEqual(
+            block_to_block_type(block),
+            BlockType.PARAGRAPH
+        )
+    
+    def test_block_to_blocktype_multiple_blocktypes(self):
+        block = '# heading\n followed by\n- list1\n- list2'
+        self.assertEqual(
+            block_to_block_type(block),
+            BlockType.HEADING
         )

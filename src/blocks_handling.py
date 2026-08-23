@@ -58,8 +58,9 @@ def block_to_block_type(block):
     order_copy = ord_list_nums.copy()
     order_copy.sort()
     # print(f'if the ordered list is sorted: {order_copy}')
-    if ord_list_nums[0] == '1' and \
-        ord_list_nums == order_copy:
-        return BlockType.ORDERED_LIST
+    if ord_list_nums != []:
+        if ord_list_nums[0] == '1' and \
+            ord_list_nums == order_copy:
+            return BlockType.ORDERED_LIST
     else:
         return BlockType.PARAGRAPH
