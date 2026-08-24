@@ -27,6 +27,11 @@ class TextNode():
         return f"TextNode({self.text}, {self.text_type.value}, {self.url})"
     
 def text_node_to_html_node(text_node):
+    """
+    Function that takes a text node, and converts it into the corresponding
+    html node.
+    Essential for building a static html site.
+    """
     if text_node.text_type is TextType.TEXT:
         return LeafNode(None, text_node.text)
     if text_node.text_type is TextType.BOLD:

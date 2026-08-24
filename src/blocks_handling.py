@@ -2,6 +2,9 @@ from enum import Enum
 import re
 
 def markdown_to_blocks(markdown):
+    """
+    Function to split markdown into blocks
+    """
     split_by_newline = markdown.split('\n\n')
     # print(f'1. markdown is split into {split_by_newline}')
     stripped_newlines = []
@@ -24,6 +27,9 @@ class BlockType(Enum):
     ORDERED_LIST = "ordered_list"
 
 def block_to_block_type(block):
+    """
+    Function to assign a block type to a block
+    """
     if re.match(r'^#{1,6} ', block):
         return BlockType.HEADING
     

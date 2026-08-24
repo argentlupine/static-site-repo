@@ -3,6 +3,10 @@ from htmlnode import *
 import re
 
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
+    """
+    Function to assign a node type based on the passed delimeter.
+    For use in fn text_to_textnodes
+    """
     if old_nodes is None:
         raise ValueError("No nodes passed to old_nodes")
     output_nodes_list = []
@@ -25,6 +29,10 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
     return output_nodes_list
 
 def extract_markdown_images(markdown_text):
+    """
+    Function to extract the image text, and image link, in a markdown image.
+    For use in fn split_nodes_image
+    """
     if markdown_text is None:
         raise ValueError("No value passed")
     if not isinstance(markdown_text, str):
@@ -35,6 +43,10 @@ def extract_markdown_images(markdown_text):
     )
 
 def extract_markdown_links(markdown_text):
+    """
+    Function to extract the link text, and link, in a markdown link.
+    For use in fn split_nodes_link
+    """
     if markdown_text is None:
         raise ValueError("No value passed")
     if not isinstance(markdown_text, str):
@@ -45,6 +57,10 @@ def extract_markdown_links(markdown_text):
     )
 
 def split_nodes_image(node_list):
+    """
+    Function that returns a list of nodes.
+    Purpose is to identify and correctly assign image nodes whilst leaving others untouched.
+    """
     if node_list is None:
         raise ValueError("Nothing passed to function")
     if not isinstance(node_list, list):
@@ -79,6 +95,10 @@ def split_nodes_image(node_list):
     return output_list
 
 def split_nodes_link(node_list):
+    """
+    Function that returns a list of nodes.
+    Purpose is to identify and correctly assign link nodes whilst leaving others untouched.
+    """
     if node_list is None:
         raise ValueError("Nothing passed to function")
     if not isinstance(node_list, list):
@@ -113,6 +133,12 @@ def split_nodes_link(node_list):
     return output_list
 
 def text_to_textnodes(text):
+    """
+    Function that uses all other functions in this file.
+    A block of markdown text is converted into a list of text nodes.
+    These text nodes are correctly classified to reflect the type of node they are.
+    All other functions should not be called directly.
+    """
     if text is None:
         raise ValueError("Nothing passed to function")
     starter_text_node = TextNode(text, TextType.TEXT)
