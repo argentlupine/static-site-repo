@@ -24,43 +24,29 @@ class BlockType(Enum):
     ORDERED_LIST = "ordered_list"
 
 def block_to_block_type(block):
-    # Identify header
     header_split = block.split(maxsplit=1)
-    if re.fullmatch(r'#+', header_split[0]):
+    if re.match(r'^#{1,6} ', block):
         return BlockType.HEADING
     
-    newlines_split = block.splitlines(keepends=True)
-    # print(f'newlines split looks like: {newlines_split}')
-
-    # print(f'code split looks like: {code_split}')
-    if newlines_split[0] == "```\n" and newlines_split[-1] == "```":
+    if block.startswith("```\n") and block.endswith("```"):
         return BlockType.CODE
 
-    # Identify quotes, unordered and ordered lists
+    newlines_split = block.splitlines()
     quote_bool = True
     unord_list_bool = True
-    ord_list_nums = []
-    for line in newlines_split:
-        if line[0] != '>':
+    ord_list_bool = True
+    for i, line in enumerate(newlines_split):
+        if not line.startswith('>'):
             quote_bool = False
-        if line[0:2] != '- ':
+        if not line.startswith('- '):
             unord_list_bool = False
-        first_space_split = line.split(maxsplit=1)
-        if re.fullmatch(r'[0-9]+\.', first_space_split[0]):
-            ord_list_nums.extend(re.findall(r'([0-9]+)', first_space_split[0]))
-            # print(f'appended {first_space_split[0]} to ord_list_nums')
+        if not line.startswith(f'{i+1}. '):
+            ord_list_bool = False
     if quote_bool:
         return BlockType.QUOTE
     if unord_list_bool:
         return BlockType.UNORDERED_LIST
-    # print(f'final ordered list check is {ord_list_nums}')
-    # print(f'the first item is {ord_list_nums[0]}')
-    order_copy = ord_list_nums.copy()
-    order_copy.sort()
-    # print(f'if the ordered list is sorted: {order_copy}')
-    if ord_list_nums != []:
-        if ord_list_nums[0] == '1' and \
-            ord_list_nums == order_copy:
-            return BlockType.ORDERED_LIST
-    else:
-        return BlockType.PARAGRAPH
+    if ord_list_bool:
+        return BlockType.ORDERED_LIST
+
+    return BlockType.PARAGRAPH
