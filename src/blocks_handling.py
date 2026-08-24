@@ -41,21 +41,4 @@ def block_to_block_type(block):
     if all(line.startswith(f'{i+1}. ') for i, line in enumerate(lines)):
         return BlockType.ORDERED_LIST
 
-    # quote_bool = True
-    # unord_list_bool = True
-    # ord_list_bool = True
-    # for i, line in enumerate(newlines_split):
-    #     if not line.startswith('>'):
-    #         quote_bool = False
-    #     if not line.startswith('- '):
-    #         unord_list_bool = False
-    #     if not line.startswith(f'{i+1}. '):
-    #         ord_list_bool = False
-    # if quote_bool:
-    #     return BlockType.QUOTE
-    # if unord_list_bool:
-    #     return BlockType.UNORDERED_LIST
-    # if ord_list_bool:
-    #     return BlockType.ORDERED_LIST
-
     return BlockType.PARAGRAPH

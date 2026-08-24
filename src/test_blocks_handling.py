@@ -83,6 +83,13 @@ This is _italiced_paragraph
             BlockType.PARAGRAPH
         )
     
+    def test_block_to_blocktype_heading_too_many(self):
+        block = '####### this is a heading'
+        self.assertEqual(
+            block_to_block_type(block),
+            BlockType.PARAGRAPH
+        )
+    
     def test_block_to_blocktype_code(self):
         block = '```\nthis is a code block\n```'
         self.assertEqual(
@@ -134,6 +141,13 @@ This is _italiced_paragraph
 
     def test_block_to_blocktype_ordered_list_bad(self):
         block = '1 list item\n2 another list item\n3 a final list item'
+        self.assertEqual(
+            block_to_block_type(block),
+            BlockType.PARAGRAPH
+        )
+
+    def test_block_to_blocktype_ordered_list_number_skip(self):
+        block = '1. list item\n3. another list item\n4. a final list item'
         self.assertEqual(
             block_to_block_type(block),
             BlockType.PARAGRAPH
