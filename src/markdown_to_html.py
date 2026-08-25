@@ -1,25 +1,7 @@
-# Let's write some sudocode
-# This function takes a load of markdown
-# We then need to split the markdown into blocks
-# We then loop through the blocks
-# We have to determine what type the block is
-# Once we've determined the type, we must convert it to the right htmlnode
-# We then must assign the correct child html node blocks to the htmlnode
-# It recommends we create a shared text_to_children(text) function that works for
-# all block types
-# It takes a string of text, and returns a list of htmlnodes that represent the 
-# inline markdown using previously created functions
-# The code block is a special case. There should be no inline markdown parsing
-# of its children. Recommendation is to not use text_to_children, but instead 
-# manually make a text node, then use text_node_to_html_node
-# Make all the block nodes children under a single parent HTML node (which
-# should just be a div) followed by returning it. 
-# Then make tests
-
-from blocks_handling import markdown_to_blocks, block_to_block_type
-from node_processing import text_to_textnodes
 from textnode import TextNode, TextType, text_node_to_html_node
 from htmlnode import HTMLNode, LeafNode, ParentNode
+from node_processing import text_to_textnodes
+from blocks_handling import markdown_to_blocks, block_to_block_type, BlockType
 
 def markdown_to_html_node(markdown):
     """
@@ -27,20 +9,54 @@ def markdown_to_html_node(markdown):
     a series of html nodes as an output.
     """
     blocks = markdown_to_blocks(blocks)
+    html_node_collector = []
     for block in blocks:
         block_type = block_to_block_type(block)
-        # Getting down my thoughts
-        # Converting this to the right html node
-        # Dependent on the block type, it can be a leaf or a parent node...
-        # How do I know which one?
-        # Separately I then need a text_to_children, that takes the block 
-        # then converts it into the right children (like text to html node)
-        # What could this mean? Do I need to split it into bold nodes?
-        # Lots to think about here.abs
-        # Probably easier to go markdown --> blocks --> textnodes
-        # A block will almost always be a parent node, except
-        # for code blocks, which are a special case. 
-        # Every other block type should then be checked to see if it 
-        # can be split into different text nodes or not. 
-        # I also need to look up the different html classes to classify
-        # the different block types properly.
+
+        if block_type is BlockType.QUOTE:
+            child_nodes = text_to_children(block)
+            block_type_parent_node = ParentNode(tag='blockquote', children=child_nodes)
+
+        if block_type is BlockType.UNORDERED_LIST:
+            child_nodes = text_to_children(block)
+            list_of_child_nodes = parent_node_list_handling(child_nodes)
+            block_type_parent_node = ParentNode(tag='ul', children=list_of_child_nodes)
+
+        if block_type is BlockType.ORDERED_LIST:
+            child_nodes = text_to_children(block)
+            list_of_child_nodes = parent_node_list_handling(child_nodes)
+            block_type_parent_node = ParentNode(tag='ol', children=list_of_child_nodes)
+
+        if block_type is BlockType.CODE:
+            code_text_node = TextNode(block, TextType.TEXT)
+            child = text_node_to_html_node(code_text_node)
+            inner_code_parent_node = ParentNode(tag='code', children=child_nodes)
+            block_type_parent_node = ParentNode(tag='pre', children=inner_html_block)
+
+        if block_type is BlockType.HEADING:
+            header = block.split(maxsplit=1)
+            child_nodes = text_to_children(block)
+            block_type_parent_node = ParentNode(tag=f'h{len(header)+1}', children=child_nodes)
+
+        if block_type is BlockType.PARAGRAPH:
+            removed_line_breaks = block.replace('/n', ' ')
+            child_nodes = text_to_children(removed_line_breaks)
+            block_type_parent_node = ParentNode(tag='p', children=child_nodes)
+
+        html_node_collector.append(block_type_parent_node)
+    
+    return ParentNode(tag='div', children=html_node_collector)
+
+    
+def text_to_children(block_text):
+    textnodes = text_to_textnodes(block_text)
+    child_list = []
+    for node in textnodes:
+        child_list.append(text_node_to_html_node(node))
+    return child_list
+
+def parent_node_list_handling(list_of_child_nodes):
+    list_collector = []
+    for child in list_of_child_nodes:
+        list_collector.append(ParentNode(tag='li', children=child))
+    return list_collector
