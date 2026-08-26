@@ -11,12 +11,17 @@ from markdown_to_html import *
 # text_type_test = TextType.LINK
 # text_url_test = "https://www.boot.dev"
 
-def main(texty):
-    leaf = LeafNode(tag=None, value=texty)
-    parent = ParentNode(tag='blockquote', children=[leaf])
-    return parent.to_html()
+def main(text):
+    print(f'text is {text}')
+    output = markdown_to_html_node(text)
+    return output.to_html()
 
-tester_text = '>quote line one\n> quote line two\n>  quote line three'
+tester_text = """
+```
+This is text that _should_ remain
+the **same** even with inline stuff
+```
+    """
 
 
 if __name__ == "__main__":
