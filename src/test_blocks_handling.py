@@ -1,6 +1,6 @@
 import unittest
-from blocks_handling import BlockType
-from blocks_handling import markdown_to_blocks, block_to_block_type
+
+from blocks_handling import BlockType, block_to_block_type, markdown_to_blocks
 
 # Now I write tests for splitting markdown blocks!
 

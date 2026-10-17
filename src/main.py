@@ -1,8 +1,8 @@
-from textnode import *
-from htmlnode import *
-from node_processing import *
 from blocks_handling import *
+from htmlnode import *
 from markdown_to_html import *
+from node_processing import *
+from textnode import *
 
 # def main(var1, var2, var3):
 #     print(TextNode(var1, var2, var3))
