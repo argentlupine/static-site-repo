@@ -38,21 +38,21 @@ the **same** even with inline stuff
 
     def test_unordered_list(self):
         md = """
-- item one
-- item two
+- item **one**
+- item _two_
 - item three
     """
 
         node = markdown_to_html_node(md)
         html = node.to_html()
         self.assertEqual(
-            html, "<div><ul><li>item one</li><li>item two</li><li>item three</li></ul></div>"
+            html, "<div><ul><li>item <b>one</b></li><li>item <i>two</i></li><li>item three</li></ul></div>"
         )
 
     def test_ordered_list(self):
         md = """
-1. number one
-2. number two
+1. number _one_
+2. number **two**
 3. number three
 """
 
@@ -60,7 +60,7 @@ the **same** even with inline stuff
         html = node.to_html()
         self.assertEqual(
             html,
-            "<div><ol><li>number one</li><li>number two</li><li>number three</li></ol></div>"
+            "<div><ol><li>number <i>one</i></li><li>number <b>two</b></li><li>number three</li></ol></div>"
         )
 
     def test_heading(self):
@@ -88,13 +88,14 @@ the **same** even with inline stuff
     def test_quote(self):
         md = """
 >This is a profound quote, believe me.
+>with a **second** line as well
 """
 
         node = markdown_to_html_node(md)
         html = node.to_html()
         self.assertEqual(
             html,
-            "<div><blockquote>This is a profound quote, believe me.</blockquote></div>"
+            "<div><blockquote>This is a profound quote, believe me.\nwith a <b>second</b> line as well</blockquote></div>"
         )
     
     def test_mixed_node_types(self):
@@ -126,4 +127,71 @@ code block init
         self.assertEqual(
             html,
             "<div><h2>Heading start</h2><p>Welcome paragraph it has two lines</p><ul><li>unord list 1</li><li>unord list 2</li></ul><p>Wow <b>second</b> <i>para</i></p><ol><li>list 1</li><li>list 2</li></ol><blockquote>quote me</blockquote><pre><code>code block init\n</code></pre><h3>Heading to close</h3></div>"
+        )
+    
+    def test_heading_and_paragraph(self):
+        md = """
+## heading
+
+paragraph follows
+
+last para follow
+"""
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><h2>heading</h2><p>paragraph follows</p><p>last para follow</p></div>"
+        )
+
+    def test_empty_block(self):
+        md = """
+
+"""
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div></div>"
+        )
+    
+    def test_single_line_code_block(self):
+        md = """
+```
+one line
+```
+"""
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><pre><code>one line\n</code></pre></div>"
+        )
+    
+    def test_no_line_code_block(self):
+        md = """
+```
+```
+"""
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><pre><code></code></pre></div>"
+        )
+    
+    def test_one_line_para(self):
+        md = """
+one line
+"""
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><p>one line</p></div>"
         )
