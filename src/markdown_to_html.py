@@ -19,21 +19,21 @@ def markdown_to_html_node(markdown):
             child_nodes = text_to_children(cleaned_block)
             block_type_parent_node = ParentNode(tag="blockquote", children=child_nodes)
 
-        if block_type is BlockType.UNORDERED_LIST:
+        elif block_type is BlockType.UNORDERED_LIST:
             list_parent_nodes = list_handling(block)
             block_type_parent_node = ParentNode(tag="ul", children=list_parent_nodes)
 
-        if block_type is BlockType.ORDERED_LIST:
+        elif block_type is BlockType.ORDERED_LIST:
             list_parent_nodes = list_handling(block)
             block_type_parent_node = ParentNode(tag="ol", children=list_parent_nodes)
 
-        if block_type is BlockType.CODE:
+        elif block_type is BlockType.CODE:
             cleaned_block = block.replace("```\n", "").replace("```", "")
             code_text_node = TextNode(cleaned_block, TextType.CODE)
             child = text_node_to_html_node(code_text_node)
             block_type_parent_node = ParentNode(tag="pre", children=[child])
 
-        if block_type is BlockType.HEADING:
+        elif block_type is BlockType.HEADING:
             split_block = block.split(maxsplit=1)
             header = split_block[0]
             cleaned_block = split_block[1]
@@ -42,7 +42,7 @@ def markdown_to_html_node(markdown):
                 tag=f"h{len(header)}", children=child_nodes
             )
 
-        if block_type is BlockType.PARAGRAPH:
+        elif block_type is BlockType.PARAGRAPH:
             removed_line_breaks = block.replace("\n", " ")
             child_nodes = text_to_children(removed_line_breaks)
             block_type_parent_node = ParentNode(tag="p", children=child_nodes)
