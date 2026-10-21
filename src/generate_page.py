@@ -60,19 +60,10 @@ def generate_page(from_path, template_path, dest_path):
     print(f"output prepped at {add_content}")
 
     # Now need to check dest path; if dir doesn't exist create
-    dirs = os.path.dirname(dest_path)
-    dirs_list = dirs.split(sep="/")
-    popped_dirs_list = dirs_list.pop(index=0).pop(index=-1)
-    dir_tracker = "."
-    for d in popped_dirs_list:
-        dir_tracker += "/" + d
-        if os.path.exists(dir_tracker):
-            continue
-        else:
-            os.mkdir("dir_tracker")
-    # Alright, use mkdirs, not mkdir - it's a recursive function!
-
-    # Directory now created; write file to the directory
-    # How do I create a file?
+    os.makedirs(dest_path)
+    with os.open(dest_path+"file.html", "x") as f:
+        f.write(add_content)
+    
+    
     
 
