@@ -24,28 +24,23 @@ def extract_title(markdown):
     return stripped_title_text
 
 def generate_page(from_path, template_path, dest_path):
-    # notes!
-    # Print a message confirming you are generating a web page
-    # Read the markdown file at the from path
-    # Use markdown to html node to convert the md to an html string
-    # Use extract title to extract the title and store in a var
-    # Replace the {{title}} and {{content}} variables in the template html
-    # Write the full html page to a file at dest_path. 
-    # Create any necessary directories if they don't exist.
-    # 
-    # Standard library options are:
-    # open, .read(), .write(), .close(), .replace(), 
-    # os.path.dirname, os.makedirs
-    # fin
+    """
+    Function that generates an html file from a markdown file.
+    Markdown file needs to be at the from path.
+    Template needs populating with the template html to be populated by markdown.
+    Destination needs specifying in the dest_path, inclusive of file name.
+    Leverages the extract_title & markdown_to_html functions.
+    """
     print(f"Using the markdown at {from_path} to generate html, insert into {template_path} and write to {dest_path}")
     
     with open(from_path, "rt") as f:
         md = f.read()
     f.close()
-    print(f"Extracted markdown {md}")
+    print("Extracted markdown")
 
-    html = markdown_to_html_node(md)
-    print(f"Generated html {html}")
+    node = markdown_to_html_node(md)
+    html = node.to_html()
+    print("Generated html")
 
     title = extract_title(md)
     print(f"Extracted title {title}")
@@ -53,18 +48,17 @@ def generate_page(from_path, template_path, dest_path):
     with open(template_path, "rt") as f:
         template = f.read()
     f.close()
-    print(f"Extracted template {template}")
+    print("Extracted template")
 
-    add_title = template.replace("{{ title }}", f"{{ {title} }}")
-    add_content = add_title.replace("{{ content }}", f"{{ {html} }}")
-    print(f"output prepped at {add_content}")
+    add_title = template.replace(r"{{ Title }}", rf"{{ {title} }}")
+    add_content = add_title.replace(r"{{ Content }}", rf"{{ {html} }}")
+    print("output prepped, proceeding to write file")
 
-    # Now need to check dest path; if dir doesn't exist create
-    # it should end with the html file name, so should split that off when mkdirs
-    os.makedirs(dest_path)
-    with os.open(dest_path+"file.html", "x") as f:
+    if not os.path.exists(os.path.dirname(dest_path)):
+        os.makedirs(os.path.dirname(dest_path))
+    with open(dest_path, "xt") as f:
         f.write(add_content)
-    print('output written to dest_path')
+    print(f"output written to {dest_path}")
     
     
 
