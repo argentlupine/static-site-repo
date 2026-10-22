@@ -15,7 +15,7 @@ def markdown_to_html_node(markdown):
         block_type = block_to_block_type(block)
 
         if block_type is BlockType.QUOTE:
-            cleaned_block = block.replace(">", "")
+            cleaned_block = block.replace("> ", "").replace(">", "")
             child_nodes = text_to_children(cleaned_block)
             block_type_parent_node = ParentNode(tag="blockquote", children=child_nodes)
 

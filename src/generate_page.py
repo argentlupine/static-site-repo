@@ -35,30 +35,19 @@ def generate_page(from_path, template_path, dest_path):
     
     with open(from_path, "rt") as f:
         md = f.read()
-    f.close()
-    print("Extracted markdown")
 
     node = markdown_to_html_node(md)
     html = node.to_html()
-    print("Generated html")
-
     title = extract_title(md)
-    print(f"Extracted title {title}")
 
     with open(template_path, "rt") as f:
         template = f.read()
     f.close()
-    print("Extracted template")
 
-    add_title = template.replace(r"{{ Title }}", rf"{{ {title} }}")
-    add_content = add_title.replace(r"{{ Content }}", rf"{{ {html} }}")
-    print("output prepped, proceeding to write file")
+    add_title = template.replace(r"{{ Title }}", title)
+    add_content = add_title.replace(r"{{ Content }}", html)
 
     if not os.path.exists(os.path.dirname(dest_path)):
         os.makedirs(os.path.dirname(dest_path))
-    with open(dest_path, "xt") as f:
+    with open(dest_path, "w") as f:
         f.write(add_content)
-    print(f"output written to {dest_path}")
-    
-    
-
