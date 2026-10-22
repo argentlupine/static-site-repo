@@ -62,3 +62,14 @@ line 2
             "header 1"
         )
     
+    def test_empty_string(self):
+        md = ""
+        
+        with self.assertRaises(ValueError):
+            extract_title(md)
+    
+    def test_hastag_no_space(self):
+        md = "#title"
+        
+        with self.assertRaises(ValueError):
+            extract_title(md)
