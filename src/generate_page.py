@@ -60,10 +60,11 @@ def generate_page(from_path, template_path, dest_path):
     print(f"output prepped at {add_content}")
 
     # Now need to check dest path; if dir doesn't exist create
+    # it should end with the html file name, so should split that off when mkdirs
     os.makedirs(dest_path)
     with os.open(dest_path+"file.html", "x") as f:
         f.write(add_content)
-    
+    print('output written to dest_path')
     
     
 
