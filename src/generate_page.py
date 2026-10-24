@@ -62,8 +62,8 @@ def generate_pages_recursively(dir_path_content, template_path, dest_dir_path):
         dir_path_list = os.listdir(dir_path_content)
         print(f"files in {dir_path_content}: {dir_path_list}")
         for dir in dir_path_list:
-            sub_dir_path = dir_path_content + "/" + dir
-            dest_sub_dir_path = dest_dir_path + "/" + dir
+            sub_dir_path = os.path.join(dir_path_content, dir)
+            dest_sub_dir_path = os.path.join(dest_dir_path, dir)
             generate_pages_recursively(sub_dir_path, template_path, dest_sub_dir_path)
     else:
         html_dest_dir_path = dest_dir_path.replace(".md", ".html")
