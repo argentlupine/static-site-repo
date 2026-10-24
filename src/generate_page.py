@@ -51,3 +51,19 @@ def generate_page(from_path, template_path, dest_path):
         os.makedirs(os.path.dirname(dest_path))
     with open(dest_path, "w") as f:
         f.write(add_content)
+
+def generate_pages_recursively(dir_path_content, template_path, dest_dir_path):
+    """
+    Function takes a directory path, recursively applies
+    generate_page to every file to generate a linked up static site 
+    in the specified directory.
+    """
+    if not os.path.isfile(dir_path_content):
+        dir_path_list = os.listdir(dir_path_content)
+        print(f"files in {dir_path_content}: {dir_path_list}")
+        for dir in dir_path_list:
+            sub_dir_path = dir_path_content + "/" + dir
+            dest_sub_dir_path = dest_dir_path + "/" + dir
+            generate_pages_recursively(sub_dir_path, template_path, dest_sub_dir_path)
+    else:
+        generate_page(dir_path_content, template_path, dest_dir_path)
