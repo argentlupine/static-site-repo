@@ -1,5 +1,6 @@
 import os
 import shutil
+import sys
 
 from generate_page import generate_pages_recursive
 
@@ -41,10 +42,17 @@ def directory_loop(source, public):
             print(f"Log: copied {entry} to {public_filepath}")
 
 if __name__ == "__main__":
+    # print(f"here's the sys.argv variable {sys.argv}")
+    # print(f"here's the sys.argv variable length {len(sys.argv)}")
+    if len(sys.argv) <= 1:
+        basepath = "/"
+    else:
+        basepath = sys.argv[1] 
+    # print(f"basepath is {basepath}")
     source_directory = "./static"
-    public_directory = "./public"
+    public_directory = "./docs"
     from_path = "./content"
     template_path = "template.html"
-    dest_path = "./public"
+    dest_path = "./docs"
     copy_files_to_public_directory(source_directory, public_directory)
-    generate_pages_recursive(from_path, template_path, dest_path)
+    generate_pages_recursive(from_path, template_path, dest_path, basepath)

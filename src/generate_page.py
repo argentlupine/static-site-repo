@@ -24,7 +24,7 @@ def extract_title(markdown):
     stripped_title_text = title_text.strip()
     return stripped_title_text
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basepath):
     """
     Function that generates an html file from a markdown file.
     Markdown file needs to be at the from path.
@@ -47,13 +47,15 @@ def generate_page(from_path, template_path, dest_path):
 
     add_title = template.replace(r"{{ Title }}", title)
     add_content = add_title.replace(r"{{ Content }}", html)
+    add_href_basepath = add_content.replace("href=\"/", f"href=\"{basepath}")
+    add_src_basepath = add_href_basepath.replace("src=\"/", f"src=\"{basepath}")
 
     if not os.path.exists(os.path.dirname(dest_path)):
         os.makedirs(os.path.dirname(dest_path))
     with open(dest_path, "w") as f:
-        f.write(add_content)
+        f.write(add_src_basepath)
 
-def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, basepath):
     """
     Function takes a directory path, recursively applies
     generate_page to every file to generate a linked up static site 
@@ -64,9 +66,9 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
         for d in dir_path_list:
             sub_dir_path = os.path.join(dir_path_content, d)
             dest_sub_dir_path = os.path.join(dest_dir_path, d)
-            generate_pages_recursive(sub_dir_path, template_path, dest_sub_dir_path)
+            generate_pages_recursive(sub_dir_path, template_path, dest_sub_dir_path, basepath)
     elif os.path.isfile(dir_path_content) and dir_path_content.endswith(".md"):
         html_dest_dir_path = str(Path(dest_dir_path).with_suffix(".html"))
-        generate_page(dir_path_content, template_path, html_dest_dir_path)
+        generate_page(dir_path_content, template_path, html_dest_dir_path, basepath)
     else:
         print(f"Log: {dir_path_content} has not been migrated to the site.")
