@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 from blocks_handling import markdown_to_blocks
 from markdown_to_html import markdown_to_html_node
@@ -52,19 +53,20 @@ def generate_page(from_path, template_path, dest_path):
     with open(dest_path, "w") as f:
         f.write(add_content)
 
-def generate_pages_recursively(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
     """
     Function takes a directory path, recursively applies
     generate_page to every file to generate a linked up static site 
     in the specified directory.
     """
-    if not os.path.isfile(dir_path_content):
+    if os.path.isdir(dir_path_content):
         dir_path_list = os.listdir(dir_path_content)
-        print(f"files in {dir_path_content}: {dir_path_list}")
-        for dir in dir_path_list:
-            sub_dir_path = os.path.join(dir_path_content, dir)
-            dest_sub_dir_path = os.path.join(dest_dir_path, dir)
-            generate_pages_recursively(sub_dir_path, template_path, dest_sub_dir_path)
-    else:
-        html_dest_dir_path = dest_dir_path.replace(".md", ".html")
+        for d in dir_path_list:
+            sub_dir_path = os.path.join(dir_path_content, d)
+            dest_sub_dir_path = os.path.join(dest_dir_path, d)
+            generate_pages_recursive(sub_dir_path, template_path, dest_sub_dir_path)
+    elif os.path.isfile(dir_path_content) and dir_path_content.endswith(".md"):
+        html_dest_dir_path = str(Path(dest_dir_path).with_suffix(".html"))
         generate_page(dir_path_content, template_path, html_dest_dir_path)
+    else:
+        print(f"Log: {dir_path_content} has not been migrated to the site.")

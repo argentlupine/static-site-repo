@@ -1,7 +1,7 @@
 import os
 import shutil
 
-from generate_page import generate_page, generate_pages_recursively
+from generate_page import generate_pages_recursive
 
 
 def copy_files_to_public_directory(source_directory, public_directory):
@@ -43,11 +43,8 @@ def directory_loop(source, public):
 if __name__ == "__main__":
     source_directory = "./static"
     public_directory = "./public"
-    # from_path = "./content/index.md"
     from_path = "./content"
     template_path = "template.html"
-    # dest_path = "./public/index.html"
     dest_path = "./public"
     copy_files_to_public_directory(source_directory, public_directory)
-    # generate_page(from_path, template_path, dest_path)
-    generate_pages_recursively(from_path, template_path, dest_path)
+    generate_pages_recursive(from_path, template_path, dest_path)
