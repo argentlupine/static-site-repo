@@ -66,4 +66,5 @@ def generate_pages_recursively(dir_path_content, template_path, dest_dir_path):
             dest_sub_dir_path = dest_dir_path + "/" + dir
             generate_pages_recursively(sub_dir_path, template_path, dest_sub_dir_path)
     else:
-        generate_page(dir_path_content, template_path, dest_dir_path)
+        html_dest_dir_path = dest_dir_path.replace(".md", ".html")
+        generate_page(dir_path_content, template_path, html_dest_dir_path)
